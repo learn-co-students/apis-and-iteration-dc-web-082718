@@ -25,42 +25,39 @@ def get_character_movies_from_api(character)
 
   api_urls = {}
 
+  # Iterates over each character in Star Wars
+  # If the passed character exists, it takes out
+  # api urls for each film the character was in.
   people["results"].each do |character_hash|
+    # In the CLI we always downcase user input
+    # so we must check against a downcased list as well.
     if character_hash["name"].downcase == character
       api_urls = character_hash["films"]
     end
   end
 
-  make_film_array(api_urls)
+  # If no character equalling the user input has been
+  # found we inform the user politely.
+  if api_urls.empty?
+    puts "#{character.capitalize} was not in Star Wars."
+    return []
+  else
+    # If the character HAS been found, we convert the
+    # api urls into an array of hashes of movie data.
+    make_film_array(api_urls)
+  end
 
 end
 
-# # puts "1) *******"
-#  puts get_character_movies_from_api('luke skywalker')
-# puts "2) *******"
-# puts get_character_movies_from_api('c-3po')
-# puts "3) *******"
-
 def print_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
+  # Iterates over the array of hashes
+  # and puts the title of each film
   films_hash.each do |film|
-    # binding.pry
     puts film["title"]
   end
 end
 
 def show_character_movies(character)
-  # binding.pry
   films_array = get_character_movies_from_api(character)
   print_movies(films_array)
 end
-#
-# show_character_movies('han solo')
-# show_character_movies('c-3Po')
-#show_character_movies('c-3po')
-# show_character_movies('Princess Leia')
-
-## BONUS
-
-# that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
-# can you split it up into helper methods?
