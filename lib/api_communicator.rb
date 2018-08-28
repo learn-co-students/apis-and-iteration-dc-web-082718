@@ -8,7 +8,6 @@ def get_character_movies_from_api(character)
   response_hash = JSON.parse(response_string)
 
   api_urls = {}
-
   response_hash["results"].each do |character_hash|
     if character_hash["name"].downcase == character
       api_urls = character_hash["films"]
@@ -16,7 +15,6 @@ def get_character_movies_from_api(character)
   end
 
   film_array = []
-
   api_urls.each do |film_url|
     film_string = RestClient.get(film_url)
     film_array << JSON.parse(film_string)
