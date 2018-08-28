@@ -39,7 +39,7 @@ def get_character_movies_from_api(character)
   # If no character equalling the user input has been
   # found we inform the user politely.
   if api_urls.empty?
-    puts "#{character.capitalize} was not in Star Wars."
+    puts "Ironic. #{character.capitalize} was not in Star Wars."
     return []
   else
     # If the character HAS been found, we convert the
