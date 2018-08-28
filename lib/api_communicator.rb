@@ -14,19 +14,15 @@ def get_character_stats_from_api(character, option)
   # This is done for educational purposes. This is not typically done in code.
 
 
-  # iterate over the response hash to find the collection of `films` for the given
-  #   `character`
-
   response_hash["results"].each do |result|
     if result["name"].downcase == character
       return result[option]
-
     end
   end
 end
 
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
+  # collect those stat API urls, make a web request to each URL to get the info
+  # for that film
 def parse_character_stats(stats_array, key)
   stats_array.collect do |url|
     response_hash = get_response(url)
@@ -49,57 +45,38 @@ def print_stats(title_array)
   end
 end
 
+#passed on user choice as a key and displayed the desired set
 def show_character_stats(character,user_choice)
+  #retrieve stat from api
+  #stat can either be a string containing stat, a URL or array of URL's
+  stat = get_character_stats_from_api(character, user_choice)
+  #homeworld stat is a URL
   if user_choice == "homeworld"
-    stat = get_character_stats_from_api(character, user_choice)
+    #get response from homeworld URL
     response_hash = get_response(stat)
+    #display the homeworld name
     puts response_hash["name"]
     puts"*****************\n"
 
-  elsif user_choice == "films"
-    stat = get_character_stats_from_api(character, user_choice)
+  elsif user_choice == "films"#get response from homeworld URL
+      #get response from film URL
+      #get name for each film and film array
     parsed_stats = parse_character_stats(stat, "title")
     print_stats(parsed_stats)
 
   elsif user_choice ==  "species"
-    stat = get_character_stats_from_api(character, user_choice)
+    #get response from species URL
     parsed_stats = parse_character_stats(stat, "name")
     print_stats(parsed_stats)
 
   else
-    stat = get_character_stats_from_api(character, user_choice)
+    
     puts stat
     puts "*****************\n"
   end
-  stat = get_character_stats_from_api(character, user_choice)
-  # title_array = parse_character_movies(films_array)
-  # print_movies(title_array)
+
 end
 
-def convert_choice_to_key
-  case get_option
-  when "1" #Height
-      return "height"
-    when "2"
-      return "mass"
-    when "3"
-      return "hair_color"
-    when "4"
-      return "skin_color"
-    when "5"
-      return "eye_color"
-    when "6"
-      return "birth_year"
-    when "7"
-      return "gender"
-    when "8"
-      return "homeworld"
-    when "9"
-      return "films"
-    when "10"
-      return "species"
-  end
-end
 
 ## BONUS
 
