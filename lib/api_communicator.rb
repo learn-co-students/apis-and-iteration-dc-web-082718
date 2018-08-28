@@ -2,10 +2,14 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
+def get_response(url)
+  response_string = RestClient.get(url)
+  response_hash = JSON.parse(response_string)
+end
+
 def get_character_movies_from_api(character)
   #make the web request
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
-  response_hash = JSON.parse(response_string)
+  response_hash = get_response('http://www.swapi.co/api/people/')
   # NOTE: in this demonstration we name many of the variables _hash or _array.
   # This is done for educational purposes. This is not typically done in code.
 
@@ -24,8 +28,7 @@ end
   #  for that film
 def parse_character_movies(films_array)
   films_array.collect do |film_url|
-    response_string = RestClient.get(film_url)
-    response_hash = JSON.parse(response_string)
+    response_hash = get_response(film_url)
     response_hash["title"]
   end
 end
@@ -41,7 +44,7 @@ def print_movies(title_array)
   # some iteration magic and puts out the movies in a nice list
   title_array.each.with_index do |title, index|
     puts "#{index + 1}. #{title}\n"
-    puts"*****************"
+    puts"*****************\n"
   end
 end
 
