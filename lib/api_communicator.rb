@@ -2,36 +2,62 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def get_character_movies_from_api(character)
-  #make the web request
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
+def get_json(url) # Accepts a URL for an API page and returns JSON data.
+  response_string = RestClient.get(url)
   response_hash = JSON.parse(response_string)
-  
-  # NOTE: in this demonstration we name many of the variables _hash or _array. 
-  # This is done for educational purposes. This is not typically done in code.
+end
 
+def make_film_array(array_of_api_urls)
+  # Accepts an array of API_URLs and
+  # returns an array of JSON data
+  array_of_api_urls.map do |film_url|
+    get_json(film_url)
+  end
+end
 
-  # iterate over the response hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+def get_character_movies_from_api(character)
+  # Returns an array of the JSON data
+  # of each film the passed character was in.
+
+  # People is an array of hashes of data about
+  # all characters with available data
+  people = get_json('http://www.swapi.co/api/people/')
+
+  api_urls = {}
+
+  # Iterates over each character in Star Wars
+  # If the passed character exists, it takes out
+  # api urls for each film the character was in.
+  people["results"].each do |character_hash|
+    # In the CLI we always downcase user input
+    # so we must check against a downcased list as well.
+    if character_hash["name"].downcase == character
+      api_urls = character_hash["films"]
+    end
+  end
+
+  # If no character equalling the user input has been
+  # found we inform the user politely.
+  if api_urls.empty?
+    puts "Ironic. #{character.capitalize} was not in Star Wars."
+    return []
+  else
+    # If the character HAS been found, we convert the
+    # api urls into an array of hashes of movie data.
+    make_film_array(api_urls)
+  end
+
 end
 
 def print_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
+  # Iterates over the array of hashes
+  # and puts the title of each film
+  films_hash.each do |film|
+    puts film["title"]
+  end
 end
 
 def show_character_movies(character)
   films_array = get_character_movies_from_api(character)
   print_movies(films_array)
 end
-
-## BONUS
-
-# that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
-# can you split it up into helper methods?
